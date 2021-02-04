@@ -1,32 +1,32 @@
-### Before calculating the convergent evolution
+### Validation of phylogenetic tree
 
 1. I downloaded two genes of Phaseolus from ENSEMBL Plants: **SUB1 e synthetase**
+
+SUB1 will be identical for species (A,B)
+syinthetase will be identical for state (wt,dom)
 
 http://plants.ensembl.org/Phaseolus_vulgaris/Gene/Sequence?db=core;g=PHAVU_010G148300g;r=10:41896617-41903193;t=ESW07662
 http://plants.ensembl.org/Phaseolus_vulgaris/Gene/Sequence?db=core;g=PHAVU_002G236500g;r=2:40207854-40209575;t=ESW31409
 
 The len of these two genes is 2922.
 
-2. I should generate two couple of sequences from these genes with 50 % of identity. 
+2. I should generate four pieces for each gene, with 50% identity for each pair.
 
 - So for generate random mutations, I used this:  https://github.com/mkpython3/Mutation-Simulator
 
-I would obtained four pieces:
+Gene SUB1  = [(AD, AW), (BD,BW)]  50 % of identity between these
 
-Gene SUB1 Domesticated and gene SUB1 WT (already downloaded)---> 50 % of identity between these
-
-Gene Synthetase Domesticated and Gene Synthetase WT (already downloaded)--> 50 % of identity between these
+Gene Synthetase = [(AW, BW), (AD,BD)]50 % of identity between these
 
 
-I obtained two new pieces, SUB1 Domesticated and Synthetase Domesticated:
+I obtained four new pieces, for SUB1 and Synthetase:
 
 ```shell
-./mutation-simulator.py Phaseolus_vulgaris_SUB1_sequence.fa args -sn 0.50     
+./mutation-simulator.py Phaseolus_vulgaris_SUB1_sequence.fa args -sn 0.50   #for AD-AW  and BD-BW  
 ./mutation-simulator.py Phaseolus_vulgaris_synthetase_sequence.fa args -sn 0.50
 ```
 
-
-Per check if the similarity is right from the sequence obtained by ensembl and the last for each gene I used this:
+Per check if the similarity is of 50 % for the pieces I used this:
 
 ```shell
 ./clustalo-1.2.4-Ubuntu-32-bit -i syntetasewt+syntetasedom+sub1wt+sub1dom_50.fa --full --percent-id --distmat-out=50identity.distmat
@@ -34,32 +34,41 @@ Per check if the similarity is right from the sequence obtained by ensembl and t
 
 I obtained a divergent matrix.
 
-- I built the tree:
+- I built trees for two genes:
 
 ```shell
-./clustalo-1.2.4-Ubuntu-32-bit -i syntetasewt+syntetasedom+sub1wt+sub1dom_50.fa -o clustal.aln --guidetree-out treeseq50 --outfmt=clustal
+./clustalo-1.2.4-Ubuntu-32-bit -i /home/flavia/Lab/phaesolus/identity50/buttami/synthe4pieces50.fa -o clustalsynt_50.aln --guidetree-out treeseqsynt_50 --outfmt=clustal
+
+ ./clustalo-1.2.4-Ubuntu-32-bit -i /home/flavia/Lab/phaesolus/identity50/buttami/SUB_4pieces_150.fa -o clustalSUB1_50.aln --guidetree-out treeseqSUB1_50 --outfmt=clustal                                   
 ```
 
-3. I should generate two couple of sequences with 90 % of identity from the previous pieces
+### Build 4 artificial sequences that shered pieces of Gene SUB1 and pieces of Gene synthetase
 
-- From Gene SUB1 Domesticated: I obtaine SUB1 DOM and SUB1 DOM1---> 90 % between these
-- From Gene SUB1 wt: I obtaine SUB1wt and SUB1wt1--> 90 % between these
-- From Gene synthetase domesticated: synthetase dom and synthetasedom1--> 90%
-- From the Gene synthetase wt: synthetase wt and synthetase wt1--> 90 %
+I generate 91 % of identity between these pieces:
+AD----> AW 
+BD----> BW
+AD----> BD
+AW-----> BW
 
-I obtained these with this step for each pieces:
+This step for each pieces.
+
 
 ```shell
-./mutation-simulator.py Phaseolus_vulgaris_SUB1_sequence_wt.fa args -sn 0.09 >  Phaseolus_vulgaris_SUB1_sequence_wt1.fa  #similarity sequences 91 %
+./mutation-simulator.py Phaseolus_vulgaris_SUB1_sequence_AD.fa args -sn 0.09 >  Phaseolus_vulgaris_SUB1_sequence_AW.fa  #similarity sequences 91 %
 ```
+
 
 For check similarity between all pieces:
 
 ```shell
-./clustalo-1.2.4-Ubuntu-32-bit -i SUB1dom+SUBdom1+SUB1wt+SUB1wt1+syntedom+syntedom1+syntewt+syntewt1.fa --full --percent-id --distmat-out=90identity8pieces
-```
-For build tree:
+at Phaseolus_vulgaris_SUB1_AD.fa Phaseolus_vulgaris_SUB1_AW.fa Phaseolus_vulgaris_SUB1_BD.fa Phaseolus_vulgaris_SUB1_BW.fa Phaseolus_vulgaris_synthetase_AD.fa Phaseolus_vulgaris_synthetase_AW.fa Phaseolus_vulgaris_synthetase_BD.fa Phaseolus_vulgaris_synthetase_BW.fa > SUB1+SYNT90.fa
 
-```shell
-./clustalo-1.2.4-Ubuntu-32-bit -i SUB1dom+SUBdom1+SUB1wt+SUB1wt1+syntedom+syntedom1+syntewt+syntewt1.fa -o clustal.aln --guidetree-out treeseq90 --outfmt=clustal                                                                          
+./clustalo-1.2.4-Ubuntu-32-bit -i /home/flavia/Lab/phaesolus/identity93/SUB1+SYNT90.fa --full --percent-id --distmat-out=90identity8pieces
 ```
+
+I join pieces together for obtained four artificial sequences:
+
+- synt+SUB1_AD
+- synt+SUB1_AW
+- synt+SUB1_BD
+- synt+SUB1_BW
