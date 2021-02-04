@@ -45,9 +45,13 @@ I obtained a divergent matrix.
 ### Build 4 artificial sequences that shered pieces of Gene SUB1 and pieces of Gene synthetase
 
 I generate 91 % of identity between these pieces:
+
 AD----> AW 
+
 BD----> BW
+
 AD----> BD
+
 AW-----> BW
 
 This step for each pieces.
